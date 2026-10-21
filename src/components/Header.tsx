@@ -10,8 +10,10 @@ import {
   RotateCcw, 
   Undo2, 
   Redo2,
-  Trash2
+  Trash2,
+  Globe
 } from 'lucide-react';
+import { useLanguage } from '../context/LanguageContext';
 
 interface HeaderProps {
   activeTab: 'editor' | 'srt' | 'tts' | 'ai' | 'vocal' | 'translate';
@@ -46,13 +48,45 @@ export const Header: React.FC<HeaderProps> = ({
   undoCount = 0,
   redoCount = 0,
 }) => {
+  const { lang, setLang, t } = useLanguage();
+
   const tabs = [
-    { id: 'editor', label: 'កាត់តវីដេអូ', sub: 'Video Editor', icon: Film },
-    { id: 'srt', label: 'កែសម្រួល SRT', sub: `Subtitles (${cueCount})`, icon: Subtitles },
-    { id: 'tts', label: 'សំឡេងប្រុស/ស្រី', sub: 'Multi-Voice TTS', icon: Mic2 },
-    { id: 'ai', label: 'AI សម្រាយរឿង', sub: 'Recap & STT', icon: Sparkles },
-    { id: 'vocal', label: 'បំបែកសំឡេង', sub: 'Vocal Remover', icon: Sliders },
-    { id: 'translate', label: 'បកប្រែភាសា', sub: 'SRT Translator', icon: Languages },
+    { 
+      id: 'editor', 
+      label: t('tabEditor'), 
+      sub: t('tabEditorSub'), 
+      icon: Film 
+    },
+    { 
+      id: 'srt', 
+      label: t('tabSrt'), 
+      sub: `${t('tabSrtSub')} (${cueCount})`, 
+      icon: Subtitles 
+    },
+    { 
+      id: 'tts', 
+      label: t('tabTts'), 
+      sub: t('tabTtsSub'), 
+      icon: Mic2 
+    },
+    { 
+      id: 'ai', 
+      label: t('tabAi'), 
+      sub: t('tabAiSub'), 
+      icon: Sparkles 
+    },
+    { 
+      id: 'vocal', 
+      label: t('tabVocal'), 
+      sub: t('tabVocalSub'), 
+      icon: Sliders 
+    },
+    { 
+      id: 'translate', 
+      label: t('tabTranslate'), 
+      sub: t('tabTranslateSub'), 
+      icon: Languages 
+    },
   ] as const;
 
   return (
@@ -61,29 +95,33 @@ export const Header: React.FC<HeaderProps> = ({
         {/* Brand & Project Name */}
         <div className="flex items-center gap-3 w-full md:w-auto justify-between md:justify-start">
           <div className="flex items-center gap-2.5">
-            <div className="w-10 h-10 rounded-xl bg-gradient-to-tr from-rose-600 via-red-500 to-amber-500 flex items-center justify-center shadow-lg shadow-rose-950/50">
+            <div className="w-10 h-10 rounded-xl bg-gradient-to-tr from-rose-600 via-red-500 to-amber-500 flex items-center justify-center shadow-lg shadow-rose-950/50 shrink-0">
               <Film className="w-5 h-5 text-white" />
             </div>
             <div>
               <div className="flex items-center gap-2">
-                <span className="font-bold text-white text-base tracking-tight font-khmer">KHS STORYLINE</span>
+                <span className="font-bold text-white text-base tracking-tight font-khmer">
+                  {t('brandTitle')}
+                </span>
                 <span className="text-xs px-2 py-0.5 rounded-full bg-rose-500/20 text-rose-300 border border-rose-500/30 font-medium">
-                  PRO STUDIO
+                  {t('brandBadge')}
                 </span>
               </div>
-              <p className="text-[11px] text-zinc-400 font-khmer">Tool សម្រាយរឿង និងកាត់តវីដេអូអាជីព</p>
+              <p className="text-[11px] text-zinc-400 font-khmer">
+                {t('brandSubtitle')}
+              </p>
             </div>
           </div>
 
           {/* Project Title input */}
           <div className="hidden lg:flex items-center gap-2 px-3 py-1.5 rounded-lg bg-zinc-900 border border-zinc-800 text-xs">
-            <span className="text-zinc-500 font-khmer">Project:</span>
+            <span className="text-zinc-500 font-khmer">{t('projectLabel')}</span>
             <input
               type="text"
               value={projectTitle}
               onChange={(e) => setProjectTitle(e.target.value)}
               className="bg-transparent text-zinc-200 focus:outline-none w-52 font-khmer truncate hover:text-white"
-              title="ចុចដើម្បីកែឈ្មោះ Project"
+              title={lang === 'km' ? 'ចុចដើម្បីកែឈ្មោះ Project' : 'Click to rename project'}
             />
           </div>
         </div>
@@ -110,15 +148,50 @@ export const Header: React.FC<HeaderProps> = ({
           })}
         </nav>
 
-        {/* Action buttons with Global Undo/Redo */}
-        <div className="flex items-center gap-2 w-full md:w-auto justify-end">
+        {/* Action buttons: Language Switcher, Undo/Redo, Clear, Demo, Export */}
+        <div className="flex items-center gap-2 w-full md:w-auto justify-end flex-wrap">
+          {/* Language Switcher Toggle */}
+          <div 
+            className="flex items-center p-0.5 rounded-lg bg-zinc-900/90 border border-zinc-800 text-xs shadow-inner"
+            role="group"
+            aria-label="Language selector"
+          >
+            <button
+              type="button"
+              onClick={() => setLang('km')}
+              className={`flex items-center gap-1.5 px-2.5 py-1 rounded-md text-xs font-medium transition-all ${
+                lang === 'km'
+                  ? 'bg-gradient-to-r from-rose-600 to-rose-700 text-white shadow-sm font-semibold'
+                  : 'text-zinc-400 hover:text-zinc-200 hover:bg-zinc-800/50'
+              }`}
+              title="ប្តូរទៅភាសាខ្មែរ (Khmer)"
+            >
+              <span className="text-xs leading-none">🇰🇭</span>
+              <span className="font-khmer text-[11px]">ខ្មែរ</span>
+            </button>
+
+            <button
+              type="button"
+              onClick={() => setLang('en')}
+              className={`flex items-center gap-1.5 px-2.5 py-1 rounded-md text-xs font-medium transition-all ${
+                lang === 'en'
+                  ? 'bg-gradient-to-r from-rose-600 to-rose-700 text-white shadow-sm font-semibold'
+                  : 'text-zinc-400 hover:text-zinc-200 hover:bg-zinc-800/50'
+              }`}
+              title="Switch to English"
+            >
+              <span className="text-xs leading-none">🇬🇧</span>
+              <span className="text-[11px] font-sans tracking-wide">EN</span>
+            </button>
+          </div>
+
           {/* Global Undo / Redo controls */}
           <div className="flex items-center gap-0.5 p-0.5 rounded-lg bg-zinc-900 border border-zinc-800">
             <button
               onClick={undo}
               disabled={!canUndo}
               className="p-1.5 rounded-md text-zinc-400 hover:text-white hover:bg-zinc-800 disabled:opacity-30 disabled:hover:bg-transparent disabled:hover:text-zinc-400 transition"
-              title={`Undo ត្រឡប់ក្រោយ (Ctrl+Z)${undoCount > 0 ? ` [${undoCount}]` : ''}`}
+              title={`${t('undoTooltip')}${undoCount > 0 ? ` [${undoCount}]` : ''}`}
             >
               <Undo2 className="w-3.5 h-3.5 text-zinc-300" />
             </button>
@@ -127,7 +200,7 @@ export const Header: React.FC<HeaderProps> = ({
               onClick={redo}
               disabled={!canRedo}
               className="p-1.5 rounded-md text-zinc-400 hover:text-white hover:bg-zinc-800 disabled:opacity-30 disabled:hover:bg-transparent disabled:hover:text-zinc-400 transition"
-              title={`Redo ទៅមុខ (Ctrl+Y)${redoCount > 0 ? ` [${redoCount}]` : ''}`}
+              title={`${t('redoTooltip')}${redoCount > 0 ? ` [${redoCount}]` : ''}`}
             >
               <Redo2 className="w-3.5 h-3.5 text-zinc-300" />
             </button>
@@ -138,10 +211,10 @@ export const Header: React.FC<HeaderProps> = ({
             <button
               onClick={onClearAllData}
               className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs text-rose-400 hover:text-white hover:bg-rose-950/60 border border-rose-900/50 transition"
-              title="លុបទិន្នន័យចាស់ទាំងអស់ ដើម្បីចាប់ផ្តើមគម្រោងថ្មីស្អាត"
+              title={t('clearDataTooltip')}
             >
               <Trash2 className="w-3.5 h-3.5" />
-              <span className="hidden sm:inline font-khmer">លុបទិន្នន័យចាស់</span>
+              <span className="hidden sm:inline font-khmer">{t('clearData')}</span>
             </button>
           )}
 
@@ -149,18 +222,19 @@ export const Header: React.FC<HeaderProps> = ({
           <button
             onClick={onResetDemo}
             className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs text-zinc-400 hover:text-zinc-200 hover:bg-zinc-900 border border-zinc-800 transition"
-            title="ទាញយកទិន្នន័យគំរូមកមើល"
+            title={t('demoDataTooltip')}
           >
             <RotateCcw className="w-3.5 h-3.5" />
-            <span className="hidden sm:inline font-khmer">ទិន្នន័យគំរូ</span>
+            <span className="hidden sm:inline font-khmer">{t('demoData')}</span>
           </button>
 
+          {/* Export Video & SRT Modal Trigger */}
           <button
             onClick={onOpenExportModal}
-            className="flex items-center gap-2 px-4 py-1.5 rounded-lg text-xs font-semibold bg-gradient-to-r from-amber-500 to-rose-600 hover:from-amber-400 hover:to-rose-500 text-white shadow-md shadow-rose-950/40 transition active:scale-95"
+            className="flex items-center gap-2 px-3.5 py-1.5 rounded-lg text-xs font-semibold bg-gradient-to-r from-amber-500 to-rose-600 hover:from-amber-400 hover:to-rose-500 text-white shadow-md shadow-rose-950/40 transition active:scale-95 whitespace-nowrap"
           >
             <Download className="w-3.5 h-3.5" />
-            <span className="font-khmer">Export វីដេអូ & SRT</span>
+            <span className="font-khmer">{t('exportBtn')}</span>
           </button>
         </div>
       </div>

@@ -1,6 +1,7 @@
 import React, { useRef } from 'react';
 import { SubtitleCue, VideoProject } from '../types';
 import { Film, Subtitles, Mic2, Music, Scissors } from 'lucide-react';
+import { useLanguage } from '../context/LanguageContext';
 
 interface TimelineTracksProps {
   project: VideoProject;
@@ -21,6 +22,7 @@ export const TimelineTracks: React.FC<TimelineTracksProps> = ({
   onSelectCue,
   selectedCueId,
 }) => {
+  const { lang, t } = useLanguage();
   const containerRef = useRef<HTMLDivElement | null>(null);
   const totalDuration = Math.max(duration, 30);
 
@@ -61,22 +63,22 @@ export const TimelineTracks: React.FC<TimelineTracksProps> = ({
         <div className="flex items-center gap-4">
           <div className="flex items-center gap-1.5 font-khmer text-zinc-300 font-medium">
             <Scissors className="w-3.5 h-3.5 text-rose-500" />
-            <span>Timeline បន្ទាត់កាត់ត</span>
+            <span>{lang === 'km' ? 'Timeline បន្ទាត់កាត់ត' : 'Multi-Track Timeline'}</span>
           </div>
 
           {/* Speaker color tags */}
           <div className="hidden sm:flex items-center gap-2 text-[10px]">
             <span className="flex items-center gap-1">
               <span className="w-2.5 h-2.5 rounded bg-purple-500" />
-              <span className="font-khmer">អ្នករៀបរាប់</span>
+              <span className="font-khmer">{t('narratorSpeaker')}</span>
             </span>
             <span className="flex items-center gap-1">
               <span className="w-2.5 h-2.5 rounded bg-blue-500" />
-              <span className="font-khmer">ប្រុស</span>
+              <span className="font-khmer">{t('maleSpeaker')}</span>
             </span>
             <span className="flex items-center gap-1">
               <span className="w-2.5 h-2.5 rounded bg-pink-500" />
-              <span className="font-khmer">ស្រី</span>
+              <span className="font-khmer">{t('femaleSpeaker')}</span>
             </span>
           </div>
         </div>
@@ -92,19 +94,19 @@ export const TimelineTracks: React.FC<TimelineTracksProps> = ({
         <div className="w-28 flex flex-col gap-2 pr-3 pt-6 border-r border-zinc-800 text-xs text-zinc-400 shrink-0">
           <div className="h-9 flex items-center gap-1.5 font-khmer text-[11px] text-zinc-300">
             <Film className="w-3.5 h-3.5 text-indigo-400" />
-            <span>វីដេអូ</span>
+            <span>{t('trackVideo')}</span>
           </div>
           <div className="h-9 flex items-center gap-1.5 font-khmer text-[11px] text-zinc-300">
             <Subtitles className="w-3.5 h-3.5 text-amber-400" />
-            <span>Subtitles</span>
+            <span>{t('trackSrt')}</span>
           </div>
           <div className="h-9 flex items-center gap-1.5 font-khmer text-[11px] text-zinc-300">
             <Mic2 className="w-3.5 h-3.5 text-emerald-400" />
-            <span>Voiceover</span>
+            <span>{t('trackTts')}</span>
           </div>
           <div className="h-9 flex items-center gap-1.5 font-khmer text-[11px] text-zinc-300">
             <Music className="w-3.5 h-3.5 text-rose-400" />
-            <span>BGM</span>
+            <span>{t('trackBgm')}</span>
           </div>
         </div>
 

@@ -18,6 +18,7 @@ import {
 import { VideoProject, SubtitleCue } from '../types';
 import { formatToSrt, formatToVtt, formatToScriptText } from '../utils/srtParser';
 import { getAudioContext, audioBufferToWav, generateProceduralBgm } from '../utils/audioProcessor';
+import { useLanguage } from '../context/LanguageContext';
 
 interface ExportModalProps {
   isOpen: boolean;
@@ -32,10 +33,14 @@ export const ExportModal: React.FC<ExportModalProps> = ({
   project,
   cues,
 }) => {
+  const { lang, t } = useLanguage();
+
   // Video render state
   const [isExportingVideo, setIsExportingVideo] = useState(false);
   const [exportProgress, setExportProgress] = useState(0);
-  const [renderStatusText, setRenderStatusText] = useState('ត្រៀម Render');
+  const [renderStatusText, setRenderStatusText] = useState(
+    lang === 'km' ? 'ត្រៀម Render' : 'Ready to Render'
+  );
   const [currentFrameInfo, setCurrentFrameInfo] = useState({ frame: 0, totalFrames: 0, timeSec: 0 });
   const [activeBurningText, setActiveBurningText] = useState('');
   const [downloadReadyUrl, setDownloadReadyUrl] = useState<string | null>(null);
@@ -302,14 +307,16 @@ export const ExportModal: React.FC<ExportModalProps> = ({
             <div>
               <div className="flex items-center gap-2">
                 <h3 className="text-sm font-bold text-white font-khmer">
-                  Export គម្រោងសម្រាយរឿង (Project Export Studio)
+                  {lang === 'km' ? 'Export គម្រោងសម្រាយរឿង (Project Export Studio)' : 'Project Export Studio'}
                 </h3>
                 <span className="text-[10px] font-mono px-2 py-0.5 rounded bg-zinc-900 border border-zinc-800 text-amber-300">
                   {project.aspectRatio}
                 </span>
               </div>
               <p className="text-[11px] text-zinc-400 font-khmer">
-                Render វីដេអូដុត Subtitle និងទាញយកឯកសារកាត់តទៅកាន់កុំព្យូទ័រ
+                {lang === 'km' 
+                  ? 'Render វីដេអូដុត Subtitle និងទាញយកឯកសារកាត់តទៅកាន់កុំព្យូទ័រ' 
+                  : 'Render video with burned-in subtitles and download project assets'}
               </p>
             </div>
           </div>
