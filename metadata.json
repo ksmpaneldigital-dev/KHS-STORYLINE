@@ -1,0 +1,7 @@
+{
+  "name": "CineRecap Studio - កម្មវិធីសម្រាយរឿង & Video Editor",
+  "description": "កម្មវិធីសម្រាយរឿង និងកាត់តវីដេអូអាជីព: Video Editor, SRT Subtitles, Multi-Voice TTS (ប្រុស/ស្រី), Vocal Remover, Gemini AI Transcription & Translation",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
+
