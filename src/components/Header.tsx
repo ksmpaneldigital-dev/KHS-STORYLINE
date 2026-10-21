@@ -7,9 +7,10 @@ import {
   Sliders, 
   Languages, 
   Download, 
-  RotateCcw,
-  Undo2,
-  Redo2
+  RotateCcw, 
+  Undo2, 
+  Redo2,
+  Trash2
 } from 'lucide-react';
 
 interface HeaderProps {
@@ -19,6 +20,7 @@ interface HeaderProps {
   setProjectTitle: (t: string) => void;
   onOpenExportModal: () => void;
   onResetDemo: () => void;
+  onClearAllData?: () => void;
   cueCount: number;
   undo?: () => void;
   redo?: () => void;
@@ -35,6 +37,7 @@ export const Header: React.FC<HeaderProps> = ({
   setProjectTitle,
   onOpenExportModal,
   onResetDemo,
+  onClearAllData,
   cueCount,
   undo,
   redo,
@@ -130,10 +133,23 @@ export const Header: React.FC<HeaderProps> = ({
             </button>
           </div>
 
+          {/* Clear Old Data button */}
+          {onClearAllData && (
+            <button
+              onClick={onClearAllData}
+              className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs text-rose-400 hover:text-white hover:bg-rose-950/60 border border-rose-900/50 transition"
+              title="លុបទិន្នន័យចាស់ទាំងអស់ ដើម្បីចាប់ផ្តើមគម្រោងថ្មីស្អាត"
+            >
+              <Trash2 className="w-3.5 h-3.5" />
+              <span className="hidden sm:inline font-khmer">លុបទិន្នន័យចាស់</span>
+            </button>
+          )}
+
+          {/* Load Demo Data button */}
           <button
             onClick={onResetDemo}
             className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs text-zinc-400 hover:text-zinc-200 hover:bg-zinc-900 border border-zinc-800 transition"
-            title="ត្រឡប់ទៅទិន្នន័យគំរូដើម"
+            title="ទាញយកទិន្នន័យគំរូមកមើល"
           >
             <RotateCcw className="w-3.5 h-3.5" />
             <span className="hidden sm:inline font-khmer">ទិន្នន័យគំរូ</span>

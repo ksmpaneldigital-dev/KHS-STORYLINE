@@ -40,10 +40,10 @@ export const DEMO_SRT_TEXT = `1
 [អ្នករៀបរាប់] តើពួកគេអាចរួចរស់ជីវិតចេញពីកោះមរណៈនេះបានដោយរបៀបណា? សូមចុច Like និង Subscribe ដើម្បីទស្សនាភាគបន្ត!`;
 
 export const INITIAL_PROJECT: VideoProject = {
-  id: 'proj_sample_01',
-  title: 'សម្រាយរឿង៖ អាថ៌កំបាំងកោះមរណៈ (Death Island Recap)',
+  id: 'proj_new_01',
+  title: 'KHS STORYLINE - គម្រោងថ្មី',
   videoUrl: '', // Will be initialized with generated cinematic canvas video
-  duration: 32,
+  duration: 30,
   aspectRatio: '16:9',
   videoVolume: 0.7,
   voiceoverVolume: 1.0,
@@ -52,7 +52,7 @@ export const INITIAL_PROJECT: VideoProject = {
   watermarkText: 'KHS STORYLINE',
   subtitleConfig: INITIAL_SUBTITLE_STYLE,
   trimStart: 0,
-  trimEnd: 32,
+  trimEnd: 30,
 };
 
 /**

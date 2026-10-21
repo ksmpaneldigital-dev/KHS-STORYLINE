@@ -444,6 +444,22 @@ export const SrtEditorTab: React.FC<SrtEditorTabProps> = ({
                 </button>
               </div>
 
+              {/* Clear All Cues */}
+              {cues.length > 0 && (
+                <button
+                  onClick={() => {
+                    if (confirm('តើអ្នកពិតជាចង់លុប Subtitles ទាំងអស់មែនទេ? (អ្នកអាចចុច Undo បាន)')) {
+                      setCues([], 'លុប Subtitles ទាំងអស់');
+                    }
+                  }}
+                  className="flex items-center gap-1 px-2.5 py-1.5 rounded-lg bg-zinc-950 border border-zinc-800 hover:bg-rose-950/40 text-xs text-rose-400 hover:text-rose-300 font-khmer transition"
+                  title="លុប Subtitles ទាំងអស់ចេញពីគម្រោង (Clear All Cues)"
+                >
+                  <Trash2 className="w-3.5 h-3.5" />
+                  <span className="hidden sm:inline">លុបទាំងអស់</span>
+                </button>
+              )}
+
               <label className="flex items-center gap-1 px-2.5 py-1.5 rounded-lg bg-zinc-950 border border-zinc-800 hover:bg-zinc-800 text-xs text-zinc-300 cursor-pointer font-khmer transition">
                 <Upload className="w-3.5 h-3.5 text-rose-400" />
                 <span>Import SRT</span>

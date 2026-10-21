@@ -31,7 +31,7 @@ export default function App() {
   const [project, setProject] = useState<VideoProject>(INITIAL_PROJECT);
   const [subtitleConfig, setSubtitleConfig] = useState<SubtitleStyleConfig>(INITIAL_SUBTITLE_STYLE);
 
-  // Global Undo / Redo History Stack for Subtitles
+  // Global Undo / Redo History Stack for Subtitles (starts clean without old data)
   const {
     cues,
     setCues,
@@ -43,7 +43,7 @@ export default function App() {
     redoCount,
     lastAction,
     resetCuesAndHistory,
-  } = useSubtitleHistory(parseSrt(DEMO_SRT_TEXT));
+  } = useSubtitleHistory([]);
 
   const [currentTime, setCurrentTime] = useState<number>(0);
   const [isPlaying, setIsPlaying] = useState<boolean>(false);
@@ -148,7 +148,18 @@ export default function App() {
     setProject((prev) => ({ ...prev, aspectRatio }));
   };
 
-  // Reset to initial demo project
+  // Clear all old data to start clean
+  const handleClearAllData = () => {
+    resetCuesAndHistory([]);
+    setProject((prev) => ({
+      ...prev,
+      title: 'KHS STORYLINE - គម្រោងថ្មី',
+    }));
+    setCurrentTime(0);
+    setIsPlaying(false);
+  };
+
+  // Reset to demo project with sample video & cues
   const handleResetDemo = async () => {
     const demoVideoUrl = await createDemoMovieVideo();
     setProject({
@@ -171,6 +182,7 @@ export default function App() {
         setProjectTitle={(title) => setProject((p) => ({ ...p, title }))}
         onOpenExportModal={() => setIsExportModalOpen(true)}
         onResetDemo={handleResetDemo}
+        onClearAllData={handleClearAllData}
         cueCount={cues.length}
         undo={undo}
         redo={redo}

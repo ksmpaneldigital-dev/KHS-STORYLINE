@@ -35,11 +35,9 @@ export const AiRecapTab: React.FC<AiRecapTabProps> = ({
   const [subSection, setSubSection] = useState<'script_writer' | 'gemini_stt' | 'local_stt'>('script_writer');
 
   // Script writer state
-  const [movieTitle, setMovieTitle] = useState('អាថ៌កំបាំងលើកោះមរណៈ');
+  const [movieTitle, setMovieTitle] = useState('');
   const [genre, setGenre] = useState('Action / Thriller / Mystery');
-  const [synopsis, setSynopsis] = useState(
-    'ក្រុមរុករក ៣ នាក់បានទៅដល់កោះចម្លែកមួយដែលមានសត្វចម្លែក និងល្បាក់អាថ៌កំបាំងក្រោមដី...'
-  );
+  const [synopsis, setSynopsis] = useState('');
   const [tone, setTone] = useState('អធិប្បាយរំភើប ភ័យរន្ធត់ កាត់ឆ្មក់ Hook ទាក់ទាញ សម្រាប់ TikTok/YouTube');
   const [durationMinutes, setDurationMinutes] = useState(3);
   const [isGeneratingScript, setIsGeneratingScript] = useState(false);
