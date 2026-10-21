@@ -49,7 +49,7 @@ export const INITIAL_PROJECT: VideoProject = {
   voiceoverVolume: 1.0,
   bgmVolume: 0.35,
   filter: 'cinematic',
-  watermarkText: 'CineRecap Studio',
+  watermarkText: 'KHS STORYLINE',
   subtitleConfig: INITIAL_SUBTITLE_STYLE,
   trimStart: 0,
   trimEnd: 32,

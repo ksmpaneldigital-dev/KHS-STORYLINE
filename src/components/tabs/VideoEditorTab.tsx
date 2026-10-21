@@ -203,7 +203,7 @@ export const VideoEditorTab: React.FC<VideoEditorTabProps> = ({
             type="text"
             value={project.watermarkText}
             onChange={(e) => setProject((p) => ({ ...p, watermarkText: e.target.value }))}
-            placeholder="ឧ. CineRecap Movie Studio"
+            placeholder="ឧ. KHS STORYLINE"
             className="flex-1 bg-zinc-950 border border-zinc-800 rounded-lg px-3 py-2 text-xs text-white focus:outline-none focus:border-rose-500 font-khmer"
           />
           <button

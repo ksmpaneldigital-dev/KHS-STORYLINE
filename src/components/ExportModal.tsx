@@ -161,7 +161,7 @@ export const ExportModal: React.FC<ExportModalProps> = ({
 
         ctx.fillStyle = '#94a3b8';
         ctx.font = '20px Inter, sans-serif';
-        ctx.fillText(`CineRecap Master Export • Time: 00:${('0' + Math.floor(t)).slice(-2)}`, w / 2, h / 2 + 25);
+        ctx.fillText(`KHS STORYLINE Master Export • Time: 00:${('0' + Math.floor(t)).slice(-2)}`, w / 2, h / 2 + 25);
 
         // Find active cue
         const activeCue = cues.find((c) => t >= c.startSeconds && t <= c.endSeconds);
