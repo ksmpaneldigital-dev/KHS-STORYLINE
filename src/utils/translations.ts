@@ -41,6 +41,9 @@ export const translations = {
     trackSrt: 'អក្សររត់ (SRT)',
     trackTts: 'សំឡេងអាន (TTS)',
     trackBgm: 'ភ្លេងកំដរ (BGM)',
+    videoVolumeGain: 'កម្រិតសំឡេងវីដេអូដើម (Video Gain)',
+    muteVideoAudio: 'បិទសំឡេងវីដេអូ',
+    unmuteVideoAudio: 'បើកសំឡេងវីដេអូ',
     noVideoLoaded: 'គ្មានវីដេអូត្រូវបានផ្ទុក',
 
     // Video Editor Tab
@@ -199,6 +202,9 @@ export const translations = {
     trackSrt: 'Subtitles (SRT)',
     trackTts: 'Voiceover (TTS)',
     trackBgm: 'Music (BGM)',
+    videoVolumeGain: 'Video Audio Gain',
+    muteVideoAudio: 'Mute Video Audio',
+    unmuteVideoAudio: 'Unmute Video Audio',
     noVideoLoaded: 'No video loaded',
 
     // Video Editor Tab

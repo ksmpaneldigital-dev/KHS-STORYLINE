@@ -224,6 +224,9 @@ export default function App() {
                 setActiveTab('srt');
               }}
               selectedCueId={selectedCueId}
+              onUpdateVideoVolume={(vol) => {
+                setProject((p) => ({ ...p, videoVolume: vol }));
+              }}
             />
           </div>
 

@@ -9,7 +9,10 @@ import {
   Activity, 
   Waves, 
   Sparkles,
-  Zap
+  Zap,
+  Volume2,
+  Volume1,
+  VolumeX
 } from 'lucide-react';
 import { useLanguage } from '../context/LanguageContext';
 import { extractAudioPeaks } from '../utils/waveformUtils';
@@ -22,6 +25,7 @@ interface TimelineTracksProps {
   onSeek: (time: number) => void;
   onSelectCue?: (cue: SubtitleCue) => void;
   selectedCueId?: string;
+  onUpdateVideoVolume?: (volume: number) => void;
 }
 
 export const TimelineTracks: React.FC<TimelineTracksProps> = ({
@@ -32,6 +36,7 @@ export const TimelineTracks: React.FC<TimelineTracksProps> = ({
   onSeek,
   onSelectCue,
   selectedCueId,
+  onUpdateVideoVolume,
 }) => {
   const { lang, t } = useLanguage();
   const containerRef = useRef<HTMLDivElement | null>(null);
@@ -45,6 +50,32 @@ export const TimelineTracks: React.FC<TimelineTracksProps> = ({
   const [showSpikeMarkers, setShowSpikeMarkers] = useState<boolean>(true);
   const [hoverTime, setHoverTime] = useState<number | null>(null);
   const [hoverXPercent, setHoverXPercent] = useState<number | null>(null);
+
+  // Video Track Volume Gain State & Handlers (Independent from TTS/BGM)
+  const [lastNonZeroVolume, setLastNonZeroVolume] = useState<number>(
+    project.videoVolume > 0 ? project.videoVolume : 0.8
+  );
+
+  const handleVolumeChange = (newVolume: number) => {
+    const clamped = Math.max(0, Math.min(1, newVolume));
+    if (clamped > 0) {
+      setLastNonZeroVolume(clamped);
+    }
+    onUpdateVideoVolume?.(clamped);
+  };
+
+  const handleToggleMute = (e?: React.MouseEvent) => {
+    if (e) {
+      e.stopPropagation();
+    }
+    if (project.videoVolume > 0) {
+      setLastNonZeroVolume(project.videoVolume);
+      onUpdateVideoVolume?.(0);
+    } else {
+      const restored = lastNonZeroVolume > 0 ? lastNonZeroVolume : 0.8;
+      onUpdateVideoVolume?.(restored);
+    }
+  };
 
   // Extract or generate audio peaks aligned with speech & media
   useEffect(() => {
@@ -230,9 +261,25 @@ export const TimelineTracks: React.FC<TimelineTracksProps> = ({
         {/* Track Label Column */}
         <div className="w-28 flex flex-col gap-2 pr-3 pt-6 border-r border-zinc-800 text-xs text-zinc-400 shrink-0">
           {/* Track 1: Video */}
-          <div className="h-9 flex items-center gap-1.5 font-khmer text-[11px] text-zinc-300">
-            <Film className="w-3.5 h-3.5 text-indigo-400" />
-            <span className="truncate">{t('trackVideo')}</span>
+          <div className="h-9 flex items-center justify-between gap-1 font-khmer text-[11px] text-zinc-300 pr-1">
+            <div className="flex items-center gap-1.5 truncate">
+              <Film className="w-3.5 h-3.5 text-indigo-400 shrink-0" />
+              <span className="truncate">{t('trackVideo')}</span>
+            </div>
+            <button
+              type="button"
+              onClick={handleToggleMute}
+              className="p-1 rounded hover:bg-zinc-800 text-zinc-400 hover:text-zinc-200 transition shrink-0"
+              title={project.videoVolume === 0 ? t('unmuteVideoAudio') : t('muteVideoAudio')}
+            >
+              {project.videoVolume === 0 ? (
+                <VolumeX className="w-3.5 h-3.5 text-rose-400" />
+              ) : project.videoVolume < 0.5 ? (
+                <Volume1 className="w-3.5 h-3.5 text-indigo-300" />
+              ) : (
+                <Volume2 className="w-3.5 h-3.5 text-indigo-400" />
+              )}
+            </button>
           </div>
 
           {/* Track 2: Audio Waveform (Speech Spikes) */}
@@ -291,15 +338,89 @@ export const TimelineTracks: React.FC<TimelineTracksProps> = ({
           </div>
 
           {/* Track 1: Video Track */}
-          <div className="h-9 rounded-lg bg-indigo-950/30 border border-indigo-900/40 relative overflow-hidden flex items-center px-2">
-            <div className="text-[10px] text-indigo-300/80 font-khmer truncate">
-              {project.title} • {project.aspectRatio}
+          <div className="h-9 rounded-lg bg-indigo-950/30 border border-indigo-900/40 relative overflow-hidden flex items-center justify-between px-2 select-none group/videotrack">
+            <div className="text-[10px] text-indigo-300/80 font-khmer truncate flex items-center gap-2 z-10 min-w-0 pr-2">
+              <span className="truncate font-medium">{project.title}</span>
+              <span className="text-zinc-600 hidden sm:inline">•</span>
+              <span className="font-mono text-[9px] text-indigo-300/70 hidden sm:inline px-1 py-0.5 rounded bg-indigo-900/40 border border-indigo-700/40">
+                {project.aspectRatio}
+              </span>
             </div>
+
             {/* Filmstrip mock dashes */}
             <div className="absolute inset-0 opacity-10 flex justify-between pointer-events-none">
               {Array.from({ length: 24 }).map((_, i) => (
                 <div key={i} className="w-4 border-r border-indigo-200 h-full" />
               ))}
+            </div>
+
+            {/* Video Audio Volume Gain Slider Controls */}
+            <div
+              onClick={(e) => e.stopPropagation()}
+              onMouseDown={(e) => e.stopPropagation()}
+              className="z-10 flex items-center gap-1.5 sm:gap-2 bg-zinc-950/85 backdrop-blur-sm border border-indigo-800/60 hover:border-indigo-500/60 px-2 py-0.5 rounded-md shadow-sm transition shrink-0"
+            >
+              {/* Quick Mute/Unmute */}
+              <button
+                type="button"
+                onClick={handleToggleMute}
+                className="p-0.5 rounded hover:bg-zinc-800 text-zinc-300 hover:text-white transition flex items-center justify-center"
+                title={project.videoVolume === 0 ? t('unmuteVideoAudio') : t('muteVideoAudio')}
+              >
+                {project.videoVolume === 0 ? (
+                  <VolumeX className="w-3.5 h-3.5 text-rose-400" />
+                ) : project.videoVolume < 0.5 ? (
+                  <Volume1 className="w-3.5 h-3.5 text-indigo-300" />
+                ) : (
+                  <Volume2 className="w-3.5 h-3.5 text-indigo-400" />
+                )}
+              </button>
+
+              <span className="text-[10px] font-mono text-zinc-400 hidden md:inline">
+                {lang === 'km' ? 'សំឡេង' : 'Gain'}:
+              </span>
+
+              {/* Volume Gain Slider */}
+              <input
+                type="range"
+                min="0"
+                max="1"
+                step="0.01"
+                value={project.videoVolume}
+                onChange={(e) => handleVolumeChange(parseFloat(e.target.value))}
+                aria-label="Video Volume Gain"
+                className="w-16 sm:w-24 md:w-28 h-1.5 bg-zinc-800 rounded-lg appearance-none cursor-pointer accent-indigo-500 hover:accent-indigo-400 focus:outline-none"
+                title={`${t('videoVolumeGain')}: ${Math.round(project.videoVolume * 100)}%`}
+              />
+
+              {/* Percentage Readout */}
+              <span className={`text-[10px] font-mono font-bold w-8 text-right ${
+                project.videoVolume === 0 ? 'text-rose-400' : 'text-indigo-300'
+              }`}>
+                {Math.round(project.videoVolume * 100)}%
+              </span>
+
+              {/* Quick Presets */}
+              <div className="hidden sm:flex items-center gap-1 border-l border-zinc-800 pl-1.5">
+                {[
+                  { label: '0%', val: 0 },
+                  { label: '50%', val: 0.5 },
+                  { label: '100%', val: 1.0 },
+                ].map((preset) => (
+                  <button
+                    key={preset.label}
+                    type="button"
+                    onClick={() => handleVolumeChange(preset.val)}
+                    className={`text-[9px] font-mono px-1 py-0.5 rounded transition ${
+                      Math.abs(project.videoVolume - preset.val) < 0.03
+                        ? 'bg-indigo-600/40 text-indigo-200 font-bold border border-indigo-500/50'
+                        : 'text-zinc-500 hover:text-zinc-300 hover:bg-zinc-800'
+                    }`}
+                  >
+                    {preset.label}
+                  </button>
+                ))}
+              </div>
             </div>
           </div>
 
